@@ -35,16 +35,18 @@ class Board
 		@data.select {|_, square| square.empty?}.keys
 	end
 
+
+
+	def mark_square(position, marker)
+		@data[position].mark(marker)
+	end
+
 	def three_squares_in_a_row?(marker)
     WINNING_LINES.each do |line|
       return true if @data[line[0]].value == marker && @data[line[1]].value  == marker && @data[line[2]].value == marker
     end
     false
   end
-
-	def mark_square(position, marker)
-		@data[position].mark(marker)
-	end
 end
 
 class Square
@@ -72,7 +74,7 @@ class Square
 end
 
 class Player
-	attr_reader :marker
+	attr_reader :marker, :name
 
 	def initialize(name, marker)
 		@name = name
@@ -99,6 +101,10 @@ class Game
 			position = @board.empty_positions.sample
 		end
 		@board.mark_square(position, @current_player.marker)
+	end
+
+	def current_player_win?
+		@board.winning_condition?(@current_player.marker)
 	end
 
   def alternate_player
